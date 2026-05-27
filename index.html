@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class Amount Calculator</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #111;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0 0 16px;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 22px 0 10px;
+      text-align: center;
+      background: #111;
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      margin-bottom: 22px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 850px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border-bottom: 1px solid #e5e5e5;
+      padding: 10px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #222;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .class-name {
+      text-align: left;
+      font-weight: 700;
+      white-space: nowrap;
+      background: #fafafa;
+    }
+
+    input, output {
+      display: block;
+      width: 100%;
+      min-width: 85px;
+      padding: 9px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      text-align: right;
+      background: #fff;
+      min-height: 38px;
+    }
+
+    output {
+      background: #f2f2f2;
+      color: #111;
+    }
+
+    .field-with-btn {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: #111;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #333; }
+
+    tfoot td {
+      background: #fafafa;
+      font-weight: 700;
+      border-bottom: 0;
+    }
+
+    .overall-cell {
+      display: grid;
+      gap: 6px;
+    }
+
+    @media (max-width: 700px) {
+      .page { padding: 10px; }
+      h1 { font-size: 18px; }
+      h2 { font-size: 17px; }
+      th, td { padding: 8px; }
+      input, output {
+        min-width: 75px;
+        font-size: 14px;
+      }
+      button {
+        padding: 8px 10px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Class Amount Calculator</h1>
+
+    <section>
+      <h2>NB</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>MSS</th>
+              <th>SB</th>
+            </tr>
+          </thead>
+          <tbody id="nbRows"></tbody>
+          <tfoot>
+            <tr>
+              <td class="class-name">Overall Total</td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="overall-cell">
+                  <output id="nb-grand-total"></output>
+                  <button onclick="calculateGrand('nb', 'total')">Check</button>
+                </div>
+              </td>
+              <td>
+                <div class="overall-cell">
+                  <output id="nb-grand-mss"></output>
+                  <button onclick="calculateGrand('nb', 'mss')">Check</button>
+                </div>
+              </td>
+              <td>
+                <div class="overall-cell">
+                  <output id="nb-grand-sb"></output>
+                  <button onclick="calculateGrand('nb', 'sb')">Check</button>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>TB</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>MSS</th>
+              <th>SB</th>
+            </tr>
+          </thead>
+          <tbody id="tbRows"></tbody>
+          <tfoot>
+            <tr>
+              <td class="class-name">Overall Total</td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="overall-cell">
+                  <output id="tb-grand-total"></output>
+                  <button onclick="calculateGrand('tb', 'total')">Check</button>
+                </div>
+              </td>
+              <td>
+                <div class="overall-cell">
+                  <output id="tb-grand-mss"></output>
+                  <button onclick="calculateGrand('tb', 'mss')">Check</button>
+                </div>
+              </td>
+              <td>
+                <div class="overall-cell">
+                  <output id="tb-grand-sb"></output>
+                  <button onclick="calculateGrand('tb', 'sb')">Check</button>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const classes = [
+      "Montessori", "LKG", "UKG",
+      "Class 1", "Class 2", "Class 3", "Class 4", "Class 5",
+      "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
+    ];
+
+    const sections = {
+      nb: { rowsId: "nbRows", mssPercent: 25, sbPercent: 75 },
+      tb: { rowsId: "tbRows", mssPercent: 18, sbPercent: 82 }
+    };
+
+    function buildSection(sectionKey) {
+      const tbody = document.getElementById(sections[sectionKey].rowsId);
+
+      classes.forEach((className, index) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td class="class-name">${className}</td>
+
+          <td>
+            <input type="number" min="0" step="1" id="${sectionKey}-qty-${index}" placeholder="0" />
+          </td>
+
+          <td>
+            <input type="number" min="0" step="0.01" id="${sectionKey}-price-${index}" placeholder="0" />
+          </td>
+
+          <td>
+            <div class="field-with-btn">
+              <output id="${sectionKey}-total-${index}"></output>
+              <button onclick="calculateRowTotal('${sectionKey}', ${index})">Check</button>
+            </div>
+          </td>
+
+          <td>
+            <output id="${sectionKey}-mss-${index}"></output>
+          </td>
+
+          <td>
+            <div class="field-with-btn">
+              <output id="${sectionKey}-sb-${index}"></output>
+              <button onclick="calculateRowSplit('${sectionKey}', ${index})">Check</button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    buildSection("nb");
+    buildSection("tb");
+
+    function getValue(id) {
+      const element = document.getElementById(id);
+      return Number(element.value || element.textContent) || 0;
+    }
+
+    function setValue(id, value) {
+      document.getElementById(id).textContent = value.toFixed(2);
+    }
+
+    function calculateRowTotal(sectionKey, index) {
+      const qty = getValue(`${sectionKey}-qty-${index}`);
+      const price = getValue(`${sectionKey}-price-${index}`);
+      setValue(`${sectionKey}-total-${index}`, qty * price);
+    }
+
+    function calculateRowSplit(sectionKey, index) {
+      let total = getValue(`${sectionKey}-total-${index}`);
+
+      if (total === 0) {
+        calculateRowTotal(sectionKey, index);
+        total = getValue(`${sectionKey}-total-${index}`);
+      }
+
+      const mssPercent = sections[sectionKey].mssPercent / 100;
+      const sbPercent = sections[sectionKey].sbPercent / 100;
+
+      setValue(`${sectionKey}-mss-${index}`, total * mssPercent);
+      setValue(`${sectionKey}-sb-${index}`, total * sbPercent);
+    }
+
+    function calculateGrand(sectionKey, column) {
+      let sum = 0;
+
+      classes.forEach((_, index) => {
+        sum += getValue(`${sectionKey}-${column}-${index}`);
+      });
+
+      setValue(`${sectionKey}-grand-${column}`, sum);
+    }
+  </script>
+</body>
+</html>
