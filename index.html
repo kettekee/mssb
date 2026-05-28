@@ -85,7 +85,11 @@ input, .display-box {
 }
 
 .small-box {
-  max-width: 45px;
+  max-width: 90px;
+}
+
+.qty-box {
+  width: 45px;
 }
 
 .btn-wrap {
@@ -262,7 +266,12 @@ function buildTable(section, prices, mssPercent, sbPercent) {
       <td class="class-name">${name}</td>
 
       <td>
-        <input type="number" min="0" id="${section}-qty-${index}" placeholder="0">
+        <input
+          type="number"
+          min="0"
+          id="${section}-qty-${index}"
+          placeholder="0"
+          class="qty-box">
       </td>
 
       <td>
